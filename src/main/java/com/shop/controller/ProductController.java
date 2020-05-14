@@ -32,7 +32,7 @@ public class ProductController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteProduct(Integer id) {
-        if(!productService.getProductById(id).isPresent()){
+        if (!productService.getProductById(id).isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         productService.deleteProduct(id);
@@ -43,7 +43,7 @@ public class ProductController {
     public ResponseEntity<Void> updateProduct(@RequestBody Product product) {
         Integer id = product.getId();
         HttpStatus status = HttpStatus.CREATED;
-        if(id != null && productService.getProductById(id).isPresent()){
+        if (id != null && productService.getProductById(id).isPresent()) {
             status = HttpStatus.OK;
         }
         productService.updateProduct(product);

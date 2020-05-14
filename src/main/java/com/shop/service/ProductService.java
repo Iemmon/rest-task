@@ -10,7 +10,7 @@ public interface ProductService {
 
     Optional<Product> getProductById(Integer id);
 
-    Product updateProduct(Product product);
+    void updateProduct(Product product);
 
     void deleteProduct(Integer id);
 }
