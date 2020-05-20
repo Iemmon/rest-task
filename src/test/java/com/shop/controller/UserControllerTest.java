@@ -1,7 +1,6 @@
 package com.shop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shop.entity.Product;
 import com.shop.entity.User;
 import com.shop.service.UserService;
 import org.junit.Test;
@@ -34,90 +33,87 @@ public class UserControllerTest {
     private UserService userService;
 
     @Test
-    public void getCustomerShouldReturnOKWhenUserExists() throws Exception {
-        Optional<User> customer = Optional.of(new User());
-        when(userService.getCustomerById(anyInt())).thenReturn(customer);
+    public void getUserShouldReturnOKWhenUserExists() throws Exception {
+        Optional<User> user = Optional.of(new User());
+        when(userService.getUserById(anyInt())).thenReturn(user);
 
-        MvcResult result = mvc.perform(get("/user/get")
-                .param("id", "1"))
+        MvcResult result = mvc.perform(get("/users/1"))
                 .andExpect(status().isOk()).andReturn();
 
         String json = result.getResponse().getContentAsString();
         User resultUser = new ObjectMapper().readValue(json, User.class);
 
-        assertEquals(customer.get(), resultUser);
+        assertEquals(user.get(), resultUser);
     }
 
     @Test
-    public void getCustomerShouldReturnNOT_FOUNDWhenUserDoesNotExist() throws Exception {
+    public void getUserShouldReturnNOT_FOUNDWhenUserDoesNotExist() throws Exception {
         Optional<User> user = Optional.empty();
-        when(userService.getCustomerById(anyInt())).thenReturn(user);
+        when(userService.getUserById(anyInt())).thenReturn(user);
 
-        mvc.perform(get("/user/get")
-                .param("id", "1"))
+        mvc.perform(get("/users/1"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void addCustomerShouldReturnCREATEDWhenNewUserAdded() throws Exception {
-        User customer = new User();
-        when(userService.addNewCustomer(customer)).thenReturn(customer);
+    public void addUserShouldReturnCREATEDWhenNewUserAdded() throws Exception {
+        User user = new User();
+        when(userService.addNewUser(user)).thenReturn(user);
 
-        MvcResult result = mvc.perform(post("/user/create")
-                .content(new ObjectMapper().writeValueAsString(customer)).contentType("application/json"))
+        MvcResult result = mvc.perform(post("/users/")
+                .content(new ObjectMapper().writeValueAsString(user)).contentType("application/json"))
                 .andExpect(status().isCreated()).andReturn();
 
         String json = result.getResponse().getContentAsString();
         User resultProduct = new ObjectMapper().readValue(json, User.class);
 
-        assertEquals(customer, resultProduct);
+        assertEquals(user, resultProduct);
     }
 
     @Test
-    public void deleteCustomerShouldReturnNO_CONTENTWhenUserDeletedSuccessfully() throws Exception {
+    public void deleteUserShouldReturnNO_CONTENTWhenUserDeletedSuccessfully() throws Exception {
         Optional<User> user = Optional.of(new User());
-        when(userService.getCustomerById(anyInt())).thenReturn(user);
+        when(userService.getUserById(anyInt())).thenReturn(user);
 
-        mvc.perform(delete("/user/delete").param("id", "1"))
+        mvc.perform(delete("/users/1"))
                 .andExpect(status().isNoContent());
 
-        verify(userService).deleteCustomerById(anyInt());
+        verify(userService).deleteUserById(anyInt());
     }
 
     @Test
-    public void deleteCustomerShouldReturnNOT_FOUNDWhenUserDoesNotExist() throws Exception {
+    public void deleteUserShouldReturnNOT_FOUNDWhenUserDoesNotExist() throws Exception {
         Optional<User> user = Optional.empty();
-        when(userService.getCustomerById(anyInt())).thenReturn(user);
+        when(userService.getUserById(anyInt())).thenReturn(user);
 
-        mvc.perform(delete("/user/delete").param("id", "1"))
+        mvc.perform(delete("/users/1"))
                 .andExpect(status().isNotFound());
 
-        verify(userService, never()).deleteCustomerById(anyInt());
-
+        verify(userService, never()).deleteUserById(anyInt());
     }
 
     @Test
-    public void updateCustomerShouldReturnOKWhenUserIsPresentAndUpdated() throws Exception {
+    public void updateUserShouldReturnOKWhenUserIsPresentAndUpdated() throws Exception {
         User user = new User();
         user.setId(1);
-        when(userService.getCustomerById(anyInt())).thenReturn(Optional.of(user));
-        mvc.perform(put("/user/update")
+        when(userService.getUserById(anyInt())).thenReturn(Optional.of(user));
+        mvc.perform(put("/users/")
                 .content(new ObjectMapper().writeValueAsString(user))
                 .contentType("application/json")).andExpect(status().isOk());
 
-        verify(userService).updateExistingCustomer(user);
+        verify(userService).updateExistingUser(user);
     }
 
     @Test
-    public void updateCustomerShouldReturnCREATEDWhenUserIsNotPresentButCreated() throws Exception {
+    public void updateUserShouldReturnCREATEDWhenUserIsNotPresentButCreated() throws Exception {
         User user = new User();
 
-        when(userService.getCustomerById(anyInt())).thenReturn(Optional.of(user));
-        mvc.perform(put("/user/update")
+        when(userService.getUserById(anyInt())).thenReturn(Optional.of(user));
+        mvc.perform(put("/users/")
                 .content(new ObjectMapper().writeValueAsString(user))
                 .contentType("application/json")).andExpect(status().isCreated());
 
-        verify(userService).updateExistingCustomer(user);
+        verify(userService).updateExistingUser(user);
     }
 
 }

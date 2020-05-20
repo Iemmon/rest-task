@@ -6,11 +6,11 @@ import java.util.Optional;
 
 public interface UserService {
 
-    User addNewCustomer(User customer);
+    User addNewUser(User customer);
 
-    void updateExistingCustomer(User customer);
+    void updateExistingUser(User customer);
 
-    void deleteCustomerById(Integer id);
+    void deleteUserById(Integer id);
 
-    Optional<User> getCustomerById(Integer id);
+    Optional<User> getUserById(Integer id);
 }

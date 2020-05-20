@@ -15,22 +15,23 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User addNewCustomer(User customer) {
+    public User addNewUser(User customer) {
+        customer.getCart().forEach(product -> product.setCustomer(customer));
         return userRepository.save(customer);
     }
 
     @Override
-    public void updateExistingCustomer(User customer) {
-        userRepository.findById(customer.getId());
+    public void updateExistingUser(User customer) {
+        userRepository.save(customer);
     }
 
     @Override
-    public void deleteCustomerById(Integer id) {
+    public void deleteUserById(Integer id) {
         userRepository.deleteById(id);
     }
 
     @Override
-    public Optional<User> getCustomerById(Integer id) {
+    public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
     }
 }

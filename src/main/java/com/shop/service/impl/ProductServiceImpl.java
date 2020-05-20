@@ -6,6 +6,7 @@ import com.shop.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,8 +21,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> getProductById(Integer id) {
-        return productRepository.findById(id);
+    public Optional<Product> getProductById(Integer userId, Integer productId) {
+        return productRepository.findProductByUserId(userId, productId);
     }
 
     @Override
@@ -30,8 +31,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Integer id) {
-        productRepository.deleteById(id);
+    public void deleteProduct(Integer userId, Integer productId) {
+        productRepository.deleteProductByUserId(userId, productId);
     }
+
+    @Override
+    public List<Product> getProductsByUserId(Integer userId){
+        return productRepository.findAllProductsByUserId(userId);
+    }
+
 
 }

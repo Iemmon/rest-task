@@ -1,52 +1,47 @@
 package com.shop.controller;
 
 import com.shop.entity.User;
+import com.shop.exceptionhandler.ResourceNotFoundException;
 import com.shop.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/create")
-    public ResponseEntity<User> addCustomer(@RequestBody User customer) {
-        User resultUser = userService.addNewCustomer(customer);
+    @PostMapping
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        User resultUser = userService.addNewUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(resultUser);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Void> updateCustomer(@RequestBody User customer) {
-        Integer id = customer.getId();
+    @PutMapping
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+        Integer id = user.getId();
         HttpStatus status = HttpStatus.CREATED;
-        if (id != null && userService.getCustomerById(id).isPresent()) {
+        if (id != null && userService.getUserById(id).isPresent()) {
             status = HttpStatus.OK;
         }
-        userService.updateExistingCustomer(customer);
+        userService.updateExistingUser(user);
         return ResponseEntity.status(status).build();
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteCustomer(Integer id) {
-        if (!userService.getCustomerById(id).isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        userService.deleteCustomerById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+        userService.getUserById(id).orElseThrow(ResourceNotFoundException::new);
+        userService.deleteUserById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<User> getCustomer(Integer id) {
-        Optional<User> resultUser = userService.getCustomerById(id);
-        return resultUser.map(user
-                -> ResponseEntity.status(HttpStatus.OK).body(user)).orElseGet(()
-                -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Integer id) {
+        User resultUser = userService.getUserById(id).orElseThrow(ResourceNotFoundException::new);
+        return ResponseEntity.status(HttpStatus.OK).body(resultUser);
     }
 }
