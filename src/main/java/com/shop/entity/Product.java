@@ -1,5 +1,7 @@
 package com.shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -21,5 +23,8 @@ public class Product {
     private Integer quantity;
 
     @ManyToOne
+    @JoinColumn(columnDefinition = "cart")
+    @JsonBackReference
+    @JsonProperty("customer")
     private User customer;
 }

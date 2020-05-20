@@ -1,5 +1,6 @@
 package com.shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -21,7 +22,8 @@ public class User {
     @JsonProperty("password")
     private String password;
 
-    @OneToMany(mappedBy = "customer")
-
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty("products")
+    @JsonManagedReference
     private List<Product> cart;
- }
+}
