@@ -5,28 +5,42 @@ import com.shop.entity.Product;
 import com.shop.entity.User;
 import com.shop.service.ProductService;
 import com.shop.service.UserService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ProductController.class)
+@SpringBootTest
+@EnableAutoConfiguration
 public class ProductControllerTest {
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
     public MockMvc mvc;
+
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    }
 
     @MockBean
     private ProductService productService;
@@ -35,6 +49,7 @@ public class ProductControllerTest {
     private UserService userService;
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void getProductShouldReturnOKWhenProductExists() throws Exception {
         Optional<Product> product = Optional.of(new Product());
         when(productService.getProductById(eq(1), eq(1))).thenReturn(product);
@@ -51,6 +66,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void getProductShouldReturnNOT_FOUNDWhenProductDoesNotExist() throws Exception {
         Optional<Product> product = Optional.empty();
         when(productService.getProductById(eq(1), eq(1))).thenReturn(product);
@@ -62,6 +78,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void getAllProductsByUserIdShouldReturnOKWhenUserExists() throws Exception {
         Optional<User> resultUser = Optional.of(new User());
         when(userService.getUserById(eq(1))).thenReturn(resultUser);
@@ -74,6 +91,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void getAllProductsByUserIdShouldReturnNOT_FOUNDWhenUserDoesNotExist() throws Exception {
         Optional<User> resultUser = Optional.empty();
         when(userService.getUserById(eq(1))).thenReturn(resultUser);
@@ -85,6 +103,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void addProductShouldReturnCREATEDWhenNewProductAdded() throws Exception {
         Product product = new Product();
         when(userService.getUserById(eq(1))).thenReturn(Optional.of(new User()));
@@ -103,6 +122,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void deleteProductShouldReturnNO_CONTENTWhenProductDeletedSuccessfully() throws Exception {
         Optional<Product> product = Optional.of(new Product());
         when(productService.getProductById(eq(1), eq(1))).thenReturn(product);
@@ -114,6 +134,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void deleteProductShouldReturnNOT_FOUNDWhenProductDoesNotExist() throws Exception {
         Optional<Product> product = Optional.empty();
         when(productService.getProductById(eq(1), eq(1))).thenReturn(product);
@@ -125,6 +146,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void updateProductShouldReturnOKWhenProductIsPresentAndUpdated() throws Exception {
         Product product = new Product();
         product.setId(1);
@@ -137,6 +159,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_USER")
     public void updateProductShouldReturnCREATEDWhenProductIsNotPresentButCreated() throws Exception {
         Product product = new Product();
 

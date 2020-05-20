@@ -4,6 +4,8 @@ import com.shop.entity.User;
 import com.shop.repository.UserRepository;
 import com.shop.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,5 +35,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        return userRepository.findOneByLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
     }
 }
